@@ -2,6 +2,7 @@
 export const NAV_LINKS = [
   { href: '/', key: 'home', label: 'Home' },
   { href: '/', key: 'pricing', label: 'Pricing' },
+  { href: '/', key: 'FAQs', label: 'FAQs' },
   { href: '/', key: 'testimonials', label: 'Testimonials' },
   { href: '/', key: 'contact_us', label: 'Contact Us' },
 ];
@@ -9,7 +10,7 @@ export const NAV_LINKS = [
 // CAMP SECTION
 export const PEOPLE_URL = [
   '/person1.jpg',
-  '/person2.jpg',
+  '/person2.JPG',
   '/person3.jpg',
   '/person4.jpg',
 ];
