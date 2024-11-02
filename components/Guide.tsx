@@ -18,7 +18,7 @@ const Guide = () => {
 
       <div className="flexCenter max-container relative w-full">
         <Image 
-          src="/guide1.jpg"
+          src="/guide1-min.jpg"
           alt="boat"
           width={1440}
           height={580}

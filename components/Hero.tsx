@@ -24,10 +24,10 @@ const hero = () => {
       </div>
       <div className="flex aspect-square lg:aspect-auto lg:h-[35rem] relative">
         <div className="w-3/5 h-[80%] rounded-3xl overflow-clip border-8 border-gray-200 dark:border-gray-950 z-30">
-          <Image src="/hero1.jpg" alt="Healthy Food" width={1300} height={1300} className="w-full h-full object-cover z-30" />
+          <Image src="/hero1-min.jpg" alt="Healthy Food" width={1300} height={1300} className="w-full h-full object-cover z-30" />
         </div>
         <div className="absolute right-0 bottom-0 h-[calc(100%-50px)] w-4/5 rounded-3xl overflow-clip border-4 border-gray-200 dark:border-gray-800 z-10">
-          <Image src="/hero2.jpg" alt="Healthy Girl" height={1300} width={1300} className="z-10 w-full h-full object-cover" />
+          <Image src="/hero2-min.jpg" alt="Healthy Girl" height={1300} width={1300} className="z-10 w-full h-full object-cover" />
         </div>
       </div>
     </div>
