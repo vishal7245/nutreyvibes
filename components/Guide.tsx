@@ -6,7 +6,7 @@ const Guide = () => {
   return (
     <section className="flexCenter flex-col">
       <div className="padding-container max-container w-full pb-24">
-        <Image src="/bowl-1.png" alt="camp" width={50} height={50} />
+        <Image src="/bowl-1.png" alt="Bowl" width={50} height={50} />
         <p className="uppercase regular-18 -mt-1 mb-3 text-green-50">
           We are here for your journey
         </p>
@@ -19,7 +19,7 @@ const Guide = () => {
       <div className="flexCenter max-container relative w-full">
         <Image 
           src="/guide1-min.jpg"
-          alt="boat"
+          alt="Diet Consulting"
           width={1440}
           height={580}
           className="w-full object-cover object-center 2xl:rounded-5xl"

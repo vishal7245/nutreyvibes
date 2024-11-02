@@ -1,8 +1,8 @@
 // NAVIGATION
 export const NAV_LINKS = [
   { href: '/', key: 'home', label: 'Home' },
-  { href: '/', key: 'services', label: 'Services' },
   { href: '/', key: 'pricing', label: 'Pricing' },
+  { href: '/', key: 'testimonials', label: 'Testimonials' },
   { href: '/', key: 'contact_us', label: 'Contact Us' },
 ];
 
@@ -17,32 +17,32 @@ export const PEOPLE_URL = [
 // FEATURES SECTION
 export const FEATURES = [
   {
-    title: 'Real maps can be offline',
-    icon: '/map.svg',
+    title: 'Personalized Meal Plans',
+    icon: '/bowl-icon.png',
     variant: 'green',
     description:
-      'We provide a solution for you to be able to use our application when climbing, yes offline maps you can use at any time there is no signal at the location',
+      'Customized meal plans tailored to your lifestyle, goals, and dietary needs. Every meal is a step toward a healthier you.',
   },
   {
-    title: 'Set an adventure schedule',
+    title: 'Progress Tracking & Goals',
     icon: '/calendar.svg',
     variant: 'green',
     description:
-      "Schedule an adventure with friends. On holidays, there are many interesting offers from Hilink. That way, there's no more discussion",
+      "Set wellness goals, track your progress, and celebrate achievements. Stay motivated with real-time insights.",
   },
   {
-    title: 'Technology using augment reality',
+    title: 'Expert Guidance',
     icon: '/tech.svg',
     variant: 'green',
     description:
-      'Technology uses augmented reality as a guide to your hiking trail in the forest to the top of the mountain. Already supported by the latest technology without an internet connection',
+      'Access trusted advice from our qualified nutritionists, providing support and answers whenever you need them.',
   },
   {
-    title: 'Many new locations every month',
-    icon: '/location.svg',
+    title: 'Fresh Recipes & Tips',
+    icon: '/recipe.png',
     variant: 'orange',
     description:
-      'Lots of new locations every month, because we have a worldwide community of climbers who share their best experiences with climbing',
+      'Enjoy an ever-growing library of healthy recipes and wellness tips, keeping your journey enjoyable and informed.',
   },
 ];
 
@@ -51,10 +51,8 @@ export const FOOTER_LINKS = [
   {
     title: 'Learn More',
     links: [
-      { label: 'About Hilink', url: '/about' },
-      { label: 'Press Releases', url: '/press' },
-      { label: 'Environment', url: '/environment' },
-      { label: 'Jobs', url: '/jobs' },
+      { label: 'Pricing', url: '/pricing' },
+      { label: 'FAQs', url: '/faq' },
       { label: 'Privacy Policy', url: '/privacy' },
       { label: 'Contact Us', url: '/contact' },
     ],
@@ -62,9 +60,8 @@ export const FOOTER_LINKS = [
   {
     title: 'Our Community',
     links: [
-      { label: 'Climbing Adventures', url: '/climbing' },
-      { label: 'Hiking with Hilink', url: '/hiking' },
-      { label: 'Kin Hill', url: '/kinhill' },
+      { label: 'Testimonials', url: '/testimonials' },
+      { label: 'About Us', url: '/about' },
     ],
   },
 ];
