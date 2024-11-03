@@ -9,7 +9,7 @@ const Features = () => {
       <div className="max-container padding-container relative w-full flex justify-end">
         <div className="flex flex-1 lg:min-h-[900px]">
           <Image
-            src="/feature1.png"
+            src="/lime-feature1.png"
             alt="Girl with grocery"
             width={600}
             height={1000}
@@ -59,7 +59,7 @@ const FeatureItem = ({ title, icon, description }: FeatureItem) => {
       <h2 className="bold-20 lg:bold-32 mt-5 capitalize">
         {title}
       </h2>
-      <p className="regular-16 mt-5 bg-white/80 text-gray-30 lg:mt-[30px] lg:bg-none">
+      <p className="regular-16 mt-5 bg-lime-100 text-gray-30 lg:mt-[30px] lg:bg-none">
         {description}
       </p>
     </li>

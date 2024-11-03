@@ -63,7 +63,7 @@ const Navbar = () => {
       </div>
 
       {/* Navbar Header */}
-      <header className="sticky left-0 top-0 w-full flex items-center h-20 border-b border-b-gray-200 z-40 bg-white">
+      <header className="sticky left-0 top-0 w-full flex items-center h-20 border-b border-b-gray-200 z-40 bg-lime-100">
         <nav className="relative mx-auto lg:max-w-7xl w-full px-5 sm:px-10 md:px-12 lg:px-5 flex gap-x-5 justify-between items-center">
           <div className="flex items-center min-w-max">
             <Link href="#" className="text-xl font-semibold flex items-center gap-x-2">
@@ -74,7 +74,7 @@ const Navbar = () => {
 
           {/* Nav Links */}
           <div
-            className={`absolute top-full left-0 bg-white border-b border-gray-200 py-8 lg:py-0 px-5 sm:px-10 md:px-12 lg:px-0 lg:border-none w-full lg:top-0 lg:relative lg:flex lg:justify-between duration-300 ease-linear ${
+            className={`absolute top-full left-0 bg-lime-100 border-b border-4 border-gray-400 py-8 lg:py-0 px-5 sm:px-10 md:px-12 lg:px-0 lg:border-none w-full lg:top-0 lg:relative lg:flex lg:justify-between duration-300 ease-linear ${
               navIsOpened
                 ? "translate-y-0 opacity-100 visible"
                 : "translate-y-10 opacity-0 invisible lg:visible lg:translate-y-0 lg:opacity-100"

@@ -12,6 +12,7 @@
 
 body {
   font-family: Inter;
+  background-color: rgb(236 252 203);
 }
 
 @layer utilities {
