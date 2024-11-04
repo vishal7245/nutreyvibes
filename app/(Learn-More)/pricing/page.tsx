@@ -46,7 +46,7 @@ const page = () => {
                         </div>
                         <div className="space-y-6">
                             <div className="text-center space-y-3">
-                                <h2 className="font-semibold text-2xl text-gray-900">
+                                <h2 className="font-semibold text-2xl mt-2 xl:mt-0 text-gray-900">
                                     6 Months
                                 </h2>
                                 <p className="text-gray-700">
