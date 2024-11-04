@@ -9,9 +9,18 @@ const page = () => {
                 <Image src="/about1.jpg" alt="working on housing" width={1300} height={900} className="w-full md:h-full object-cover rounded-lg" />
             </div>
             <div className="md:w-1/2 space-y-12 text-gray-700 mt-1 xl:mt-16">
-                <h1 className="text-gray-900 font-semibold text-4xl sm:text-3xl md:text-6xl">
-                    Preeti Madaan
-                </h1>
+                <div className="flex">
+                  <h1 className="text-gray-900 font-semibold text-4xl sm:text-3xl md:text-6xl">
+                      Preeti Madaan
+                  </h1>
+                  <Image
+                    src="/bowl-1.png"
+                    alt="Bowl"
+                    width={50}
+                    height={50}
+                    className="w-10 ml-2 lg:w-[50px]"
+                  />
+                </div>
                 <p className="text-justify">
                   With over 5 years of experience in the field of nutrition, Preeti Madaan is dedicated to guiding her clients toward healthier and more balanced lifestyles. Her journey into formal qualifications started two years ago, and she has since earned a diploma in Health and Nutrition, further enriched by specialized courses in Ayurveda and Clinical Nutrition.
                 </p>
