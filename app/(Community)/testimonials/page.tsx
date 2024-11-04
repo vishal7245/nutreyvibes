@@ -32,9 +32,18 @@ const page = () => {
     <section className="py-10 xl:py-20 mb-10 xl:mb-0 overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-10 md:px-12 lg:px-5 space-y-16">
         <div className="space-y-4 max-w-2xl">
-          <span className="text-green-600  font-semibold pl-6 relative before:absolute before:top-1/2 before:left-0 before:w-5 before:h-px before:rounded-full">
-            - Happy Clients
-          </span>
+        <div className="flex items-center space-x-2">
+            <Image
+                src="/bowl-1.png"
+                alt="Bowl"
+                width={50}
+                height={50}
+                className="w-10 lg:w-[50px]"
+            />
+            <span className="text-green-600 font-semibold relative pl-2">
+                - Happy Clients
+            </span>
+        </div>
           <h1 className="font-bold text-gray-800 text-3xl">Client's Say About Us</h1>
         </div>
         <div className="relative">
