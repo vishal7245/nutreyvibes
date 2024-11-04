@@ -17,7 +17,7 @@ const hero = () => {
           <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
             Get started
           </Link>
-          <Link href="#" className="px-6 items-center h-12 rounded-3xl text-green-700 border border-gray-100 dark:border-gray-800 dark:text-white bg-gray-100 dark:bg-gray-900 duration-300 ease-linear flex justify-center w-full sm:w-auto">
+          <Link href="#" className="px-6 items-center h-12 rounded-3xl text-green-700 border-2 border-gray-700  bg-gray-100 duration-300 ease-linear flex justify-center w-full sm:w-auto">
             Book a call
           </Link>
         </div>
