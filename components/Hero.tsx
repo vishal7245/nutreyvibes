@@ -14,10 +14,10 @@ const hero = () => {
         Navigating nutrition and wellness can be challenging. We're here to make it simple, providing personalized guidance and support to help you achieve a balanced, healthier lifestyle.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 w-full">
-          <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
+          <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 hover:bg-lime-300 hover:text-green-700 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
             Get started
           </Link>
-          <Link href="#" className="px-6 items-center h-12 rounded-3xl text-green-700 border-2 border-gray-700  bg-gray-100 duration-300 ease-linear flex justify-center w-full sm:w-auto">
+          <Link href="#" className="px-6 items-center h-12 rounded-3xl text-green-700 border-2 border-gray-700 hover:bg-black hover:text-white  bg-gray-100 duration-300 ease-linear flex justify-center w-full sm:w-auto">
             Book a call
           </Link>
         </div>

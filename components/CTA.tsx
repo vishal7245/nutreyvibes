@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const CTA = () => {
   return (
@@ -27,9 +28,9 @@ const CTA = () => {
                     Take the first step toward a healthier lifestyle with NutreyVibes. Our experts craft personalized nutrition plans tailored to your unique goals, helping you build sustainable habits and achieve real results. Whether you're looking to lose weight, boost energy, or just feel your best, NutreyVibes is here to support you every step of the way.
                     </p>
                     <div className="mx-auto max-w-md sm:max-w-xl flex justify-center">
-                        <button className="outline-none h-12 px-5 rounded-xl bg-green-600 text-white flex items-center">
-                            Get In touch
-                        </button>
+                    <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 hover:bg-lime-300 hover:text-green-700 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
+                        Get started
+                    </Link>
                     </div>
                 </div>
             </div>

@@ -157,19 +157,19 @@ export const testimonials: Testimonial[] = [
     avatar: "/person2.JPG"
   },
   {
-    content: "NutreyVibes has been a game-changer in my wellness journey. I’ve tried countless diets, but nothing felt sustainable until now. The personalized approach made all the difference, and the weekly follow-ups kept me accountable without feeling pressured. The recipes are simple, tasty, and fit seamlessly into my lifestyle. I’ve never felt more balanced and confident about my health!",
+    content: "I've tried a recipe for disaster with countless diets, but nothing felt sustainable until now. The personalized approach was the icing on the cake, and the weekly follow-ups kept me from biting off more than I could chew without feeling pressured. The recipes are simple, tasty, and fit seamlessly into my lifestyle like a well-oiled machine. I've never felt more balanced and confident about my health – it's the cherry on top!",
     author: "Kashni",
     position: "@busy.wittymom",
     avatar: "/person4.jpg"
   },
   {
-    content: "I was struggling with finding the right balance in my diet, but NutreyVibes made it effortless. They took the time to understand my specific needs and crafted a plan that truly works for me. In just a few months, I've lost weight, gained energy, and feel more in control of my health. NutreyVibes is more than just a diet plan—it's a lifestyle upgrade.",
+    content: "Dealing with PCOD was like being stuck in a never-ending loop of frustration, but when i started taking diet from Preeti ma’am, it was like someone finally hit the reset button. She is like a health ninja - she sliced through my struggles, whipped up a personalized meal plan, and voila! My symptoms started doing the disappearing act. It was ridiculously refreshing to have someone cheering me on and helping me take control of my health, and honestly, this whole journey has been a wild, wonderful ride!!",
     author: "Nupur",
     position: "@nupsiiee",
     avatar: "/person1.jpg"
   },
   {
-    content: "Starting with NutreyVibes was the best decision I've made for my health. The team provided a detox diet that refreshed my system, and the flexible meal options fit perfectly into my busy schedule. Their support and accountability have kept me on track, and I love the progress tracking that shows my results. NutreyVibes makes wellness easy and enjoyable!",
+    content: "Preeti aunty’s guidance helped me stay committed to achieving my dream body when I felt like giving up. She showed me that my diet wasn't aligned with my goals and introduced me to a balanced diet, revealing areas for improvement I had previously overlooked. Working with Nutreyvibes has been a thoroughly satisfying and enjoyable experience! Much love ❤",
     author: "Yukti",
     position: "@yuktiiiii_",
     avatar: "/person3.jpg"

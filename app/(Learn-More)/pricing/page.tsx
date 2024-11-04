@@ -35,9 +35,9 @@ const page = () => {
                         </div>
                         <div className="flex relative py-3 before:absolute before:top-1/2 before:inset-0 before:h-px before:bg-gray-700" />
                         <div className="flex justify-center">
-                            <a href="#" className="outline-none w-max flex items-center mx-auto h-11 px-5 rounded-md bg-gray-100 text-green-700">
-                                Get Started
-                            </a>
+                            <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-white hover:bg-lime-500 hover:text-green-700 text-green-700 duration-300 ease-linear flex justify-center w-full sm:w-auto">
+                                Get started
+                            </Link>
                         </div>
                     </div>
                     <div className="rounded-lg relative border border-gray-100 bg-lime-300 p-6 sm:p-10">
@@ -62,9 +62,9 @@ const page = () => {
                             </div>
                             <div className="flex relative py-3 before:absolute before:top-1/2 before:inset-0 before:h-px before:bg-gray-700" />
                             <div className="flex justify-center">
-                                <Link href="#" className="outline-none w-max mx-auto flex items-center h-11 px-5 rounded-md bg-green-500 text-white">
-                                    Get Started
-                                </Link>
+                            <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 hover:bg-lime-500 hover:text-green-700 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
+                                Get started
+                            </Link>
                             </div>
                         </div>
                     </div>
@@ -86,8 +86,8 @@ const page = () => {
                         </div>
                         <div className="flex relative py-3 before:absolute before:top-1/2 before:inset-0 before:h-px before:bg-gray-700" />
                         <div className="flex justify-center">
-                            <Link href="#" className="outline-none w-max mx-auto flex items-center h-11 px-5 rounded-md bg-gray-100 text-green-700">
-                                Get Started
+                            <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-white hover:bg-lime-500 hover:text-green-700 text-green-700 duration-300 ease-linear flex justify-center w-full sm:w-auto">
+                                Get started
                             </Link>
                         </div>
                     </div>

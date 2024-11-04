@@ -93,7 +93,7 @@ const Navbar = () => {
               ))}
             </ul>
             <div className="flex sm:items-center lg:min-w-max mt-10 lg:mt-0">
-            <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
+            <Link href="#" className="px-6 items-center h-12 rounded-3xl bg-green-600 hover:bg-lime-300 hover:text-green-700   text-white duration-300 ease-linear flex justify-center w-full sm:w-auto">
               Book a call
             </Link>
             </div>
