@@ -3,7 +3,7 @@ import FAQ from '@/components/FAQ'
 
 const page = () => {
   return (
-    <section className='py-10 mb-16'>
+    <section className='py-10 mb-16 mt-2'>
         <FAQ />
     </section>
   )
