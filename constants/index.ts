@@ -3,7 +3,7 @@ export const NAV_LINKS = [
   { href: '/', key: 'home', label: 'Home' },
   { href: '/pricing', key: 'pricing', label: 'Pricing' },
   { href: '/FAQ', key: 'FAQs', label: 'FAQs' },
-  { href: '/', key: 'testimonials', label: 'Testimonials' },
+  { href: '/testimonials', key: 'testimonials', label: 'Testimonials' },
   { href: '/', key: 'contact_us', label: 'Contact Us' },
 ];
 
@@ -109,10 +109,6 @@ export const FAQ_DATA = [
     answer: "Meal plans are regularly adjusted based on your progress, feedback, and any changes in your goals or lifestyle. Typically, updates are made during weekly or monthly check-ins to ensure your plan stays effective and enjoyable."
   },
   {
-    question: "Can I cancel or switch my plan at any time?",
-    answer: "Yes, you can upgrade, downgrade, or cancel your plan at any time. We want your wellness journey to be as flexible as possible. Just reach out to our support team for any plan changes."
-  },
-  {
     question: "What results can I expect?",
     answer: "Results vary based on individual goals and commitment, but many clients experience increased energy, improved health markers, weight management, and overall better well-being within a few months. We focus on sustainable, long-term results rather than quick fixes."
   },
@@ -144,4 +140,38 @@ export const FAQ_DATA = [
     question: "How do I contact NutreyVibes for additional questions?",
     answer: "You can reach us via phone at +91 971 772 2199 or email at nutreyvibes@gmail.com. We're here to answer any questions you may have and help you get started on your wellness journey!"
   }
+]
+
+export interface Testimonial {
+  content: string;
+  author: string;
+  position: string;
+  avatar: string;
+}
+
+export const testimonials: Testimonial[] = [
+  {
+    content: "NutreyVibes has completely changed the way I approach food and wellness. The personalized meal plans are easy to follow and delicious, making it simple to stick to my goals. The weekly check-ins and expert advice have kept me motivated, and I’ve never felt healthier or more energetic! Highly recommend for anyone looking to make a lasting change.",
+    author: "Ayushi",
+    position: "@ayushiish16",
+    avatar: "/person2.JPG"
+  },
+  {
+    content: "NutreyVibes has been a game-changer in my wellness journey. I’ve tried countless diets, but nothing felt sustainable until now. The personalized approach made all the difference, and the weekly follow-ups kept me accountable without feeling pressured. The recipes are simple, tasty, and fit seamlessly into my lifestyle. I’ve never felt more balanced and confident about my health!",
+    author: "Kashni",
+    position: "@busy.wittymom",
+    avatar: "/person4.jpg"
+  },
+  {
+    content: "I was struggling with finding the right balance in my diet, but NutreyVibes made it effortless. They took the time to understand my specific needs and crafted a plan that truly works for me. In just a few months, I've lost weight, gained energy, and feel more in control of my health. NutreyVibes is more than just a diet plan—it's a lifestyle upgrade.",
+    author: "Nupur",
+    position: "@nupsiiee",
+    avatar: "/person1.jpg"
+  },
+  {
+    content: "Starting with NutreyVibes was the best decision I've made for my health. The team provided a detox diet that refreshed my system, and the flexible meal options fit perfectly into my busy schedule. Their support and accountability have kept me on track, and I love the progress tracking that shows my results. NutreyVibes makes wellness easy and enjoyable!",
+    author: "Yukti",
+    position: "@yuktiiiii_",
+    avatar: "/person3.jpg"
+  },
 ]
