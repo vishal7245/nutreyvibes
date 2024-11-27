@@ -48,21 +48,35 @@ export async function PUT(
 
 // DELETE - Delete food item
 export async function DELETE(
-  req: Request,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
-  try {
-    const { id } = await params;
-    const session = await getServerSession();
+  const { id } = await params;
+  const session = await getServerSession();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+  try {
+    // Delete related MealItems first
+    await prisma.mealItem.deleteMany({
+      where: { foodId: id },
+    });
+
+    // Now delete the Food item
     await prisma.food.delete({
       where: { id },
     });
-    return NextResponse.json({ message: 'Food deleted successfully' });
+
+    return new NextResponse(null, { status: 204 });
+    
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete food' }, { status: 500 });
+    console.error('Delete error:', error);
+    return NextResponse.json(
+      { message: 'Error deleting food item' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
   }
 }

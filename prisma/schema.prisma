@@ -7,6 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model DietPlan {
+  id        String      @id @default(cuid())
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  createdBy Admin       @relation(fields: [adminId], references: [id])
+  adminId   String
+  meals     DietMeal[]
+}
+
+model DietMeal {
+  id         String       @id @default(cuid())
+  name       String
+  time       String
+  dietPlan   DietPlan    @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+  dietPlanId String
+  items      MealItem[]
+}
+
+model MealItem {
+  id         String   @id @default(cuid())
+  quantity   Float
+  unit       String
+  food       Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  foodId     String
+  meal       DietMeal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId     String
+}
+
 model Food {
   id            String   @id @default(cuid())
   name          String
@@ -20,6 +49,7 @@ model Food {
   updatedAt     DateTime @updatedAt
   createdBy     Admin    @relation(fields: [adminId], references: [id])
   adminId       String
+  mealItems     MealItem[]
 }
 
 model Admin {
@@ -29,4 +59,5 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   foods     Food[]
+  dietPlans DietPlan[]
 }

@@ -8,6 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -42,6 +50,8 @@ export default function FoodPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+  const [foodToDelete, setFoodToDelete] = useState<string | null>(null);
   const [editingFood, setEditingFood] = useState<Partial<FoodItem>>(defaultFoodItem);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -149,17 +159,19 @@ export default function FoodPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this food item?')) return;
-
+  const handleDelete = async () => {
+    if (!foodToDelete) return;
+  
     try {
-      const response = await fetch(`/api/food/${id}`, {
+      const response = await fetch(`/api/food/${foodToDelete}`, {
         method: 'DELETE',
       });
-
-      if (!response.ok) throw new Error('Failed to delete');
-
-      setFoodItems(foods => foods.filter(f => f.id !== id));
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete food item');
+      }
+  
+      setFoodItems(foods => foods.filter(f => f.id !== foodToDelete));
       toast({
         title: "Success",
         description: "Food item deleted successfully",
@@ -170,7 +182,15 @@ export default function FoodPage() {
         description: "Failed to delete food item",
         variant: "destructive",
       });
+    } finally {
+      setIsAlertDialogOpen(false);
+      setFoodToDelete(null);
     }
+  };
+
+  const handleDeleteClick = (id: string) => {
+    setFoodToDelete(id);
+    setIsAlertDialogOpen(true);
   };
 
   const handleEdit = (food: FoodItem) => {
@@ -296,7 +316,7 @@ export default function FoodPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDeleteClick(item.id)}
                 >
                   <Trash className="w-4 h-4" />
                 </Button>
@@ -312,6 +332,21 @@ export default function FoodPage() {
           </div>
         ))}
       </div>
+
+      <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this food item? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button onClick={() => setIsAlertDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleDelete} className="ml-2" variant="destructive">Delete</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {filteredFoodItems.length === 0 && (
         <div className="text-center text-gray-500 mt-8">
