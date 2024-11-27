@@ -75,8 +75,11 @@ export default function Dashboard() {
   const [isNameAlertOpen, setIsNameAlertOpen] = useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [alertDialogContent, setAlertDialogContent] = useState({ title: '', description: '' });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-
+  
 
   const filteredFoodItems = foodItems.filter(food =>
     food.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,7 +91,9 @@ export default function Dashboard() {
   }, []);
 
   const handleDownload = () => {
-    const doc = new jsPDF();
+    setIsDownloading(true);
+    try {
+      const doc = new jsPDF();
     const selectedMeals = meals.filter(meal => meal.selected);
   
     // Set background color
@@ -97,7 +102,6 @@ export default function Dashboard() {
       doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), 'F');
     };
     applyBackground();
-  
   
     // Add logo - using a more reliable approach
     try {
@@ -169,6 +173,16 @@ export default function Dashboard() {
   
       doc.save(`${planName || 'diet-plan'}.pdf`);
     }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const fetchDietPlans = async () => {
@@ -229,7 +243,8 @@ export default function Dashboard() {
       setAlertDialogOpen(true);
       return;
     }
-  
+    
+    setIsSaving(true);
     try {
       const response = await fetch('/api/diet-plans', {
         method: 'POST',
@@ -256,6 +271,8 @@ export default function Dashboard() {
         description: "Failed to save diet plan"
       });
       setAlertDialogOpen(true);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -266,7 +283,7 @@ export default function Dashboard() {
 
   const confirmDelete = async () => {
     if (!deletingPlanId) return;
-  
+    setIsDeleting(true);
     try {
       const response = await fetch(`/api/diet-plans/${deletingPlanId}`, {
         method: 'DELETE',
@@ -286,6 +303,7 @@ export default function Dashboard() {
         variant: "destructive",
       });
     } finally {
+      setIsDeleting(false);
       setIsDeleteDialogOpen(false);
       setDeletingPlanId(null);
     }
@@ -569,22 +587,35 @@ export default function Dashboard() {
 
               {/* Action Buttons */}
               <div className="flex gap-4 mt-6">
-                <Button 
+              <Button 
                   onClick={editingPlan ? handleUpdatePlan : handleSave}
-                  disabled={isUpdating}
+                  disabled={isUpdating || isSaving}
                 >
-                  {isUpdating ? (
+                  {isUpdating || isSaving ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Updating...
+                      {editingPlan ? 'Updating...' : 'Saving...'}
                     </>
                   ) : (
                     editingPlan ? 'Update Diet Plan' : 'Save Diet Plan'
                   )}
                 </Button>
-                <Button variant="outline" onClick={handleDownload}>
-                  <Download className="w-4 h-4 mr-2" /> Download PDF
-                </Button>
+                <Button 
+                    variant="outline" 
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                  >
+                    {isDownloading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" /> Download PDF
+                      </>
+                    )}
+                  </Button>
               </div>
             </div>
           </DialogContent>
@@ -636,7 +667,19 @@ export default function Dashboard() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

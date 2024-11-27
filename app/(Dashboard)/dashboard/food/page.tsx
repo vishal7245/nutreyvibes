@@ -56,6 +56,8 @@ export default function FoodPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredFoodItems, setFilteredFoodItems] = useState<FoodItem[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+
 
   useEffect(() => {
     setFilteredFoodItems(foodItems);
@@ -161,7 +163,7 @@ export default function FoodPage() {
 
   const handleDelete = async () => {
     if (!foodToDelete) return;
-  
+    setIsDeleting(true);
     try {
       const response = await fetch(`/api/food/${foodToDelete}`, {
         method: 'DELETE',
@@ -183,6 +185,7 @@ export default function FoodPage() {
         variant: "destructive",
       });
     } finally {
+      setIsDeleting(false);
       setIsAlertDialogOpen(false);
       setFoodToDelete(null);
     }
@@ -343,7 +346,17 @@ export default function FoodPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <Button onClick={() => setIsAlertDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleDelete} className="ml-2" variant="destructive">Delete</Button>
+            <Button 
+              onClick={handleDelete} 
+              className="ml-2" 
+              variant="destructive"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : null}
+              Delete
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
