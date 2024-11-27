@@ -5,18 +5,15 @@ import { getServerSession } from 'next-auth/next';
 const prisma = new PrismaClient();
 
 // PUT - Update diet plan
-export async function PUT(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await request.json();
+    const data = await req.json();
     const dietPlan = await prisma.dietPlan.update({
       where: { id },
       data: {
@@ -48,7 +45,7 @@ export async function PUT(
 // DELETE - Delete diet plan
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
