@@ -17,7 +17,7 @@ module.exports = {
   				'20': '#A2A2A2',
   				'30': '#7B7B7B',
   				'50': '#585858',
-  				'90': '#141414',
+  				'90': '#141414'
   			},
   			orange: {
   				'50': '#FF814C'
@@ -67,12 +67,22 @@ module.exports = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
   		backgroundImage: {
-			'bg-img-1': "url('/food2-min.jpg')",
-			'bg-img-2': "url('/food1-min.jpg')"
-		  },
+  			'bg-img-1': "url('/food2-min.jpg')",
+  			'bg-img-2': "url('/food1-min.jpg')"
+  		},
   		screens: {
   			xs: '400px',
   			'3xl': '1680px',
