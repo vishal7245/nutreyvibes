@@ -7,22 +7,28 @@ import { FormEvent, useState } from 'react'
 export default function Login() {
   const router = useRouter()
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false) 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
     const formData = new FormData(e.currentTarget)
     
-    const response = await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      redirect: false,
-    })
-
-    if (response?.error) {
-      setError('Invalid credentials')
-    } else {
-      router.push('/dashboard')
-      router.refresh()
+    try {
+      const response = await signIn('credentials', {
+        email: formData.get('email'),
+        password: formData.get('password'),
+        redirect: false,
+      })
+  
+      if (response?.error) {
+        setError('Invalid credentials')
+      } else {
+        router.push('/dashboard')
+        router.refresh()
+      }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -58,9 +64,10 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
+          disabled={isLoading}
+          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Login
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>
