@@ -5,7 +5,10 @@ import { getServerSession } from 'next-auth/next';
 const prisma = new PrismaClient();
 
 // PUT - Update diet plan
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
   try {
     const { id } = params;
     const session = await getServerSession();
@@ -13,7 +16,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await req.json();
+    const data = await request.json();
     const dietPlan = await prisma.dietPlan.update({
       where: { id },
       data: {
