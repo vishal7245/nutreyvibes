@@ -35,6 +35,13 @@ interface FoodItem {
   updatedAt: string;
 }
 
+interface PaginatedResponse {
+  foods: FoodItem[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+}
+
 const defaultFoodItem = {
   name: '',
   alternateName: '',
@@ -57,6 +64,9 @@ export default function FoodPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredFoodItems, setFilteredFoodItems] = useState<FoodItem[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 12;
 
 
   useEffect(() => {
@@ -64,33 +74,37 @@ export default function FoodPage() {
   }, [foodItems]);
 
   const debouncedSearch = useCallback(
-    debounce((searchValue: string) => {
-      const filtered = foodItems.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          (item.alternateName?.toLowerCase().includes(searchValue.toLowerCase()))
-      );
-      setFilteredFoodItems(filtered);
+    debounce((value: string) => {
+      setCurrentPage(1); // Reset to first page when searching
+      fetchFoodItems(1, value);
     }, 300),
-    [foodItems]
+    []
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const value = e.target.value;
     setSearchTerm(value);
     debouncedSearch(value);
   };
 
   useEffect(() => {
-    fetchFoodItems();
-  }, []);
+    fetchFoodItems(currentPage, searchTerm);
+  }, [currentPage]);
 
-  const fetchFoodItems = async () => {
+  const fetchFoodItems = async (page: number, search: string = '') => {
     try {
-      const response = await fetch('/api/food');
+      // Only show loading state when changing pages, not during search
+      if (!search) setIsLoading(true);
+      const response = await fetch(
+        `/api/food?page=${page}&limit=${itemsPerPage}&search=${encodeURIComponent(search)}`
+      );
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
-      setFoodItems(data);
+      setFoodItems(data.foods);
+      setFilteredFoodItems(data.foods);
+      setTotalPages(data.totalPages);
+      setCurrentPage(data.currentPage);
     } catch (error) {
       toast({
         title: "Error",
@@ -216,6 +230,18 @@ export default function FoodPage() {
     );
   }
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
   return (
     <div className="p-4 w-full">
       <div className="flex justify-between items-center mb-6">
@@ -291,7 +317,12 @@ export default function FoodPage() {
           placeholder="Search food items..."
           value={searchTerm}
           onChange={handleSearch}
-          className="max-w-md"
+          type="text"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
+          }}
         />
       </div>
 
@@ -334,6 +365,26 @@ export default function FoodPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 flex justify-center gap-2">
+        <Button
+          variant="outline"
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1 || isLoading}
+        >
+          Previous
+        </Button>
+        <span className="flex items-center px-4">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages || isLoading}
+        >
+          Next
+        </Button>
       </div>
 
       <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>

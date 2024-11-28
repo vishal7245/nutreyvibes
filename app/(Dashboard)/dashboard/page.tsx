@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -81,9 +81,12 @@ export default function Dashboard() {
 
   
 
-  const filteredFoodItems = foodItems.filter(food =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredFoodItems = useMemo(() => {
+    if (!Array.isArray(foodItems)) return [];
+    return foodItems.filter(food =>
+      food.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [foodItems, searchTerm]);
 
   useEffect(() => {
     fetchDietPlans();
@@ -207,7 +210,7 @@ export default function Dashboard() {
       const response = await fetch('/api/food');
       if (!response.ok) throw new Error('Failed to fetch food items');
       const data = await response.json();
-      setFoodItems(data);
+      setFoodItems(Array.isArray(data) ? data : data.foods || []);
     } catch (error) {
       toast({
         title: "Error",

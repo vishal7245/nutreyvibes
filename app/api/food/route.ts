@@ -6,12 +6,40 @@ const prisma = new PrismaClient();
 
 
 // GET - List all food items
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const foods = await prisma.food.findMany({
-      orderBy: { createdAt: 'desc' },
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '12');
+    const search = searchParams.get('search') || '';
+    const skip = (page - 1) * limit;
+
+    // Add search condition to where clause
+    const where = search
+  ? {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' as const } },
+        { alternateName: { contains: search, mode: 'insensitive' as const } },
+      ],
+    }
+  : {};
+
+    const [foods, total] = await Promise.all([
+      prisma.food.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip,
+      }),
+      prisma.food.count({ where }), // Count with search condition
+    ]);
+
+    return NextResponse.json({
+      foods,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      totalItems: total,
     });
-    return NextResponse.json(foods);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch foods' }, { status: 500 });
   }
