@@ -65,18 +65,21 @@ export function Combobox({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
-            : placeholder}
+          <span className="truncate flex-1 text-left break-words">
+            {value
+              ? options.find((option) => option.value === value)?.label
+              : placeholder}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput 
             placeholder={searchPlaceholder} 
             value={searchQuery}
             onValueChange={handleSearch}
+            className="max-w-full"
           />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
@@ -90,11 +93,12 @@ export function Combobox({
                     setOpen(false)
                     setSearchQuery("")
                   }}
+                  className="flex items-center justify-between gap-2"
                 >
-                  {option.label}
+                  <span className="truncate flex-1 text-left break-words">{option.label}</span>
                   <Check
                     className={cn(
-                      "ml-auto h-4 w-4",
+                      "h-4 w-4 shrink-0",
                       value === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />

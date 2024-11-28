@@ -557,52 +557,52 @@ export default function Dashboard() {
                               <Plus className="w-4 h-4 mr-2" /> Add Food Item
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
+                          <DialogContent className="w-[95vw] max-w-[95vw] sm:max-w-[600px] md:max-w-[700px] max-h-[80vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle>Add Food to {meal.name}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 mt-4">
-                            <Combobox
-                              options={React.useMemo(() => 
-                                foodItems.map(food => ({
-                                  value: food.id,
-                                  label: food.name
-                                })),
-                                [foodItems]
-                              )}
-                              value={selectedFood}
-                              onValueChange={setSelectedFood}
-                              placeholder="Select Food Item"
-                              searchPlaceholder="Search food items..."
-                              emptyText="No food items found."
-                              className="w-full"
-                              onSearch={(query) => {
-                                const debounceTimer = setTimeout(() => {
-                                  fetchFoodItems(query);
-                                }, 300);
-                                return () => clearTimeout(debounceTimer);
-                              }}
-                            />
+                              <Combobox
+                                options={React.useMemo(() => 
+                                  foodItems.map(food => ({
+                                    value: food.id,
+                                    label: food.name
+                                  })),
+                                  [foodItems]
+                                )}
+                                value={selectedFood}
+                                onValueChange={setSelectedFood}
+                                placeholder="Select Food Item"
+                                searchPlaceholder="Search food items..."
+                                emptyText="No food items found."
+                                className="w-full"
+                                onSearch={(query) => {
+                                  const debounceTimer = setTimeout(() => {
+                                    fetchFoodItems(query)
+                                  }, 300)
+                                  return () => clearTimeout(debounceTimer)
+                                }}
+                              />
 
                               {selectedFood && (
                                 <div className="mt-4 p-4 border rounded-lg">
                                   <h4 className="font-semibold mb-2">Nutritional Information</h4>
                                   {(() => {
-                                    const selectedFoodItem = foodItems.find(f => f.id === selectedFood);
+                                    const selectedFoodItem = foodItems.find(f => f.id === selectedFood)
                                     return selectedFoodItem ? (
-                                      <div className="grid grid-cols-2 gap-2 text-sm">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                                         <p>Protein: {selectedFoodItem.protein}g</p>
                                         <p>Carbs: {selectedFoodItem.carbs}g</p>
                                         <p>Fat: {selectedFoodItem.fat}g</p>
                                         <p>Fiber: {selectedFoodItem.fiber}g</p>
                                         <p>Calories: {selectedFoodItem.calories}</p>
                                       </div>
-                                    ) : null;
+                                    ) : null
                                   })()}
                                 </div>
                               )}
 
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Input
                                   type="number"
                                   placeholder="Quantity"
