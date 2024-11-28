@@ -24,7 +24,7 @@ const DEFAULT_MEALS = [
   { name: 'Post Dinner', time: '10:00 pm' },
 ];
 
-const UNITS = ['piece', 'tbsp', 'gm', 'kg'];
+const UNITS = ['piece', 'tbsp', 'gm', 'kg', 'ml', 'l', 'cup', 'oz', 'pinch'];
 
 interface FoodItem {
   id: string;
