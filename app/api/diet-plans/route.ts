@@ -4,26 +4,48 @@ import { getServerSession } from 'next-auth/next';
 
 const prisma = new PrismaClient();
 
+
+
 // GET - List all diet plans
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const session = await getServerSession();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Fetch the admin based on the session user's email
+    const admin = await prisma.admin.findUnique({
+      where: { email: session.user.email ?? '' }
+    });
+
+    if (!admin) {
+      return NextResponse.json({ error: 'Admin not found' }, { status: 404 });
+    }
+
     const dietPlans = await prisma.dietPlan.findMany({
+      where: { adminId: admin.id },
+      orderBy: { createdAt: 'desc' },
       include: {
         meals: {
           include: {
             items: {
               include: {
-                food: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
+                food: true
+              }
+            }
+          }
+        }
+      }
     });
+
     return NextResponse.json(dietPlans);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch diet plans' }, { status: 500 });
+    console.error('Failed to fetch diet plans:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch diet plans' }, 
+      { status: 500 }
+    );
   }
 }
 

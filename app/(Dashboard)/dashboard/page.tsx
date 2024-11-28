@@ -8,10 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/hooks/use-toast';
 import { Loader2, Download, Trash, Plus, Edit } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Combobox } from "@/components/ui/combobox";
 
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import React from 'react';
 
 const DEFAULT_MEALS = [
   { name: 'Early Morning', time: '08:00 am' },
@@ -60,9 +62,7 @@ export default function Dashboard() {
   const [meals, setMeals] = useState<Meal[]>(
     DEFAULT_MEALS.map(m => ({ ...m, selected: true, items: [] }))
   );
-  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [planName, setPlanName] = useState('');
-  const [selectedFood, setSelectedFood] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [unit, setUnit] = useState('piece');
   const [addingToMeal, setAddingToMeal] = useState<string | null>(null);
@@ -78,20 +78,28 @@ export default function Dashboard() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [foodPage, setFoodPage] = useState(1);
+  const [totalFoodPages, setTotalFoodPages] = useState(1);
+  const [selectedFood, setSelectedFood] = useState<string>('');
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
 
   
 
-  const filteredFoodItems = useMemo(() => {
-    if (!Array.isArray(foodItems)) return [];
-    return foodItems.filter(food =>
-      food.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [foodItems, searchTerm]);
+  const filteredFoodItems = foodItems;
 
   useEffect(() => {
     fetchDietPlans();
-    fetchFoodItems();
   }, []);
+
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      fetchFoodItems(searchTerm);
+    }, 300); // Debounce search for better performance
+  
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
 
   const handleDownload = () => {
     setIsDownloading(true);
@@ -189,36 +197,55 @@ export default function Dashboard() {
   };
 
   const fetchDietPlans = async () => {
+    setIsLoading(true);
     try {
+      console.log('Fetching diet plans...');
       const response = await fetch('/api/diet-plans');
-      if (!response.ok) throw new Error('Failed to fetch diet plans');
+      
+      if (!response.ok) {
+        console.error('Response not ok:', response.status, response.statusText);
+        throw new Error(`Failed to fetch diet plans: ${response.statusText}`);
+      }
+      
       const data = await response.json();
-      setDietPlans(data);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch diet plans",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        console.log('Fetched diet plans:', data);
+        setDietPlans(data);
+      } catch (error) {
+        console.error('Error fetching diet plans:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch diet plans",
+          variant: "destructive",
+        });
+        // Set empty array to prevent loading state from being stuck
+        setDietPlans([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const fetchFoodItems = async () => {
-    try {
-      const response = await fetch('/api/food');
-      if (!response.ok) throw new Error('Failed to fetch food items');
-      const data = await response.json();
-      setFoodItems(Array.isArray(data) ? data : data.foods || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch food items",
-        variant: "destructive",
-      });
-    }
-  };
+    const fetchFoodItems = async (searchQuery = '') => {
+      try {
+        console.log('Fetching food items with search:', searchQuery);
+        const response = await fetch(`/api/food/search?search=${encodeURIComponent(searchQuery)}`);
+        
+        if (!response.ok) {
+          console.error('Response not ok:', response.status, response.statusText);
+          throw new Error('Failed to fetch food items');
+        }
+        
+        const data = await response.json();
+        console.log('Fetched food items:', data.foods?.length || 0, 'items');
+        setFoodItems(data.foods || []);
+      } catch (error) {
+        console.error('Error fetching food items:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch food items",
+          variant: "destructive",
+        });
+      }
+    };
 
   const handleSave = async () => {
     if (!planName.trim()) {
@@ -430,6 +457,27 @@ export default function Dashboard() {
     });
   };
 
+  const searchFoodItems = async (searchQuery: string) => {
+    try {
+      const response = await fetch(`/api/food/search?search=${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) throw new Error('Failed to search food items');
+      const data = await response.json();
+      setFoodItems(data.foods || []);
+    } catch (error) {
+      console.error('Error searching food items:', error);
+      toast({
+        title: "Error",
+        description: "Failed to search food items",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Initial food items load
+  useEffect(() => {
+    searchFoodItems('');
+  }, []);
+  
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-6xl mx-auto">
@@ -514,38 +562,43 @@ export default function Dashboard() {
                               <DialogTitle>Add Food to {meal.name}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 mt-4">
-                              <Input
-                                placeholder="Search food items..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                              />
-
-                              <Select
-                                value={selectedFood}
-                                onValueChange={setSelectedFood}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select Food Item" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {filteredFoodItems.map((food) => (
-                                    <SelectItem key={food.id} value={food.id}>
-                                      {food.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                            <Combobox
+                              options={React.useMemo(() => 
+                                foodItems.map(food => ({
+                                  value: food.id,
+                                  label: food.name
+                                })),
+                                [foodItems]
+                              )}
+                              value={selectedFood}
+                              onValueChange={setSelectedFood}
+                              placeholder="Select Food Item"
+                              searchPlaceholder="Search food items..."
+                              emptyText="No food items found."
+                              className="w-full"
+                              onSearch={(query) => {
+                                const debounceTimer = setTimeout(() => {
+                                  fetchFoodItems(query);
+                                }, 300);
+                                return () => clearTimeout(debounceTimer);
+                              }}
+                            />
 
                               {selectedFood && (
                                 <div className="mt-4 p-4 border rounded-lg">
                                   <h4 className="font-semibold mb-2">Nutritional Information</h4>
-                                  <div className="grid grid-cols-2 gap-2 text-sm">
-                                    <p>Protein: {foodItems.find(f => f.id === selectedFood)?.protein}g</p>
-                                    <p>Carbs: {foodItems.find(f => f.id === selectedFood)?.carbs}g</p>
-                                    <p>Fat: {foodItems.find(f => f.id === selectedFood)?.fat}g</p>
-                                    <p>Fiber: {foodItems.find(f => f.id === selectedFood)?.fiber}g</p>
-                                    <p>Calories: {foodItems.find(f => f.id === selectedFood)?.calories}</p>
-                                  </div>
+                                  {(() => {
+                                    const selectedFoodItem = foodItems.find(f => f.id === selectedFood);
+                                    return selectedFoodItem ? (
+                                      <div className="grid grid-cols-2 gap-2 text-sm">
+                                        <p>Protein: {selectedFoodItem.protein}g</p>
+                                        <p>Carbs: {selectedFoodItem.carbs}g</p>
+                                        <p>Fat: {selectedFoodItem.fat}g</p>
+                                        <p>Fiber: {selectedFoodItem.fiber}g</p>
+                                        <p>Calories: {selectedFoodItem.calories}</p>
+                                      </div>
+                                    ) : null;
+                                  })()}
                                 </div>
                               )}
 
