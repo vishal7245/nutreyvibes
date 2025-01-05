@@ -37,6 +37,7 @@ model MealItem {
   mealId     String
 }
 
+
 model Food {
   id            String   @id @default(cuid())
   name          String
