@@ -16,14 +16,14 @@ import autoTable from 'jspdf-autotable';
 import React from 'react';
 
 const DEFAULT_MEALS = [
-  { name: 'Early Morning', time: '08:00', selected: true, items: [] },
-  { name: 'BreakFast', time: '10:00', selected: true, items: [] },
-  { name: 'Mid Morning', time: '12:00', selected: true, items: [] },
-  { name: 'Lunch', time: '14:00', selected: true, items: [] },
-  { name: 'Evening', time: '16:00', selected: true, items: [] },
-  { name: 'Late Evening', time: '18:00', selected: true, items: [] },
-  { name: 'Dinner', time: '20:00', selected: true, items: [] },
-  { name: 'Post Dinner', time: '22:00', selected: true, items: [] },
+  { name: 'Early Morning', time: '08:00', selected: true, items: [], comment: '' },
+  { name: 'BreakFast', time: '10:00', selected: true, items: [], comment: '' },
+  { name: 'Mid Morning', time: '12:00', selected: true, items: [], comment: '' },
+  { name: 'Lunch', time: '14:00', selected: true, items: [], comment: '' },
+  { name: 'Evening', time: '16:00', selected: true, items: [], comment: '' },
+  { name: 'Late Evening', time: '18:00', selected: true, items: [], comment: '' },
+  { name: 'Dinner', time: '20:00', selected: true, items: [], comment: '' },
+  { name: 'Post Dinner', time: '22:00', selected: true, items: [], comment: '' },
 ];
 
 const UNITS = ['piece', 'tbsp', 'gm', 'kg', 'ml', 'l', 'cup', 'oz', 'pinch'];
@@ -54,6 +54,7 @@ interface Meal {
   time: string;
   selected: boolean;
   items: MealItem[];
+  comment?: string;
 }
 
 export default function Dashboard() {
@@ -104,6 +105,14 @@ export default function Dashboard() {
     setMeals(prevMeals => {
       const newMeals = [...prevMeals];
       newMeals[index].time = newTime;
+      return newMeals;
+    });
+  };
+
+  const handleCommentChange = (index: number, comment: string) => {
+    setMeals(prevMeals => {
+      const newMeals = [...prevMeals];
+      newMeals[index].comment = comment;
       return newMeals;
     });
   };
@@ -162,6 +171,15 @@ export default function Dashboard() {
         doc.setFont("Helvetica", 'bold');
         doc.text(`${meal.name} - ${meal.time}`, 14, yPos);
         doc.setFont("Helvetica", 'normal');
+        yPos += 10;
+        if (meal.comment) {
+          doc.setFont("Helvetica", 'italic');
+          doc.setFontSize(10);
+          doc.text(`Note: ${meal.comment}`, 14, yPos);
+          doc.setFontSize(12);
+          doc.setFont("Helvetica", 'normal');
+          yPos += 10;
+        }
         
         if (meal.items.length > 0) {
           // Create table for food items
@@ -361,6 +379,7 @@ export default function Dashboard() {
       return {
         name: defaultMeal.name,
         time: defaultMeal.time,
+        comment: existingMeal?.comment || '',
         selected: existingMeal ? true : false,
         items: existingMeal?.items || [],
       };
@@ -541,6 +560,17 @@ export default function Dashboard() {
                         />
                       </div>
                     </div>
+
+                    {meal.selected && (
+                      <div className="mb-4">
+                        <textarea
+                          placeholder="Add notes for this meal..."
+                          value={meal.comment || ''}
+                          onChange={(e) => handleCommentChange(index, e.target.value)}
+                          className="w-full p-2 border rounded-md min-h-[60px] text-sm"
+                        />
+                      </div>
+                    )}
 
                     {meal.selected && (
                       <>

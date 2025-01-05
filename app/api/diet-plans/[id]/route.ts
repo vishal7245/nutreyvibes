@@ -23,6 +23,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           create: data.meals.map((meal: any) => ({
             name: meal.name,
             time: meal.time,
+            comment: meal.comment,
             items: {
               create: meal.items.map((item: any) => ({
                 quantity: item.quantity,
