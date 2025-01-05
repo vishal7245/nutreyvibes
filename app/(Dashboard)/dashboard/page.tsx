@@ -178,7 +178,6 @@ export default function Dashboard() {
           doc.text(`Note: ${meal.comment}`, 14, yPos);
           doc.setFontSize(12);
           doc.setFont("Helvetica", 'normal');
-          yPos += 10;
         }
         
         if (meal.items.length > 0) {
