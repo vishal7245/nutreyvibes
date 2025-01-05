@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -477,6 +477,20 @@ export default function Dashboard() {
   useEffect(() => {
     searchFoodItems('');
   }, []);
+
+  const memoizedComboboxOptions = (foodItems: FoodItem[]) => 
+    foodItems.map(food => ({
+      value: food.id,
+      label: food.name
+    }));
+
+    const handleMealSelectionChange = useCallback((index: number, checked: boolean) => {
+      setMeals(prevMeals => {
+        const newMeals = [...prevMeals];
+        newMeals[index].selected = checked;
+        return newMeals;
+      });
+    }, []);
   
   return (
     <div className="min-h-screen p-8">
@@ -505,14 +519,10 @@ export default function Dashboard() {
                 {meals.map((meal, index) => (
                   <div key={meal.name} className="border rounded-lg p-4">
                     <div className="flex items-center gap-4 mb-4">
-                      <Checkbox
-                        checked={meal.selected}
-                        onCheckedChange={(checked) => {
-                          const newMeals = [...meals];
-                          newMeals[index].selected = checked as boolean;
-                          setMeals(newMeals);
-                        }}
-                      />
+                    <Checkbox
+                      checked={meal.selected}
+                      onCheckedChange={(checked) => handleMealSelectionChange(index, checked as boolean)}
+                    />
                       <div>
                         <h3 className="font-semibold">{meal.name}</h3>
                         <p className="text-sm text-gray-500">{meal.time}</p>
@@ -562,27 +572,21 @@ export default function Dashboard() {
                               <DialogTitle>Add Food to {meal.name}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 mt-4">
-                              <Combobox
-                                options={React.useMemo(() => 
-                                  foodItems.map(food => ({
-                                    value: food.id,
-                                    label: food.name
-                                  })),
-                                  [foodItems]
-                                )}
-                                value={selectedFood}
-                                onValueChange={setSelectedFood}
-                                placeholder="Select Food Item"
-                                searchPlaceholder="Search food items..."
-                                emptyText="No food items found."
-                                className="w-full"
-                                onSearch={(query) => {
-                                  const debounceTimer = setTimeout(() => {
-                                    fetchFoodItems(query)
-                                  }, 300)
-                                  return () => clearTimeout(debounceTimer)
-                                }}
-                              />
+                            <Combobox
+                              options={memoizedComboboxOptions(foodItems)}
+                              value={selectedFood}
+                              onValueChange={setSelectedFood}
+                              placeholder="Select Food Item"
+                              searchPlaceholder="Search food items..."
+                              emptyText="No food items found."
+                              className="w-full"
+                              onSearch={(query) => {
+                                const debounceTimer = setTimeout(() => {
+                                  fetchFoodItems(query)
+                                }, 300)
+                                return () => clearTimeout(debounceTimer)
+                              }}
+                            />
 
                               {selectedFood && (
                                 <div className="mt-4 p-4 border rounded-lg">
