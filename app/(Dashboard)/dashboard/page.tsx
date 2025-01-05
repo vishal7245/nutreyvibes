@@ -16,14 +16,14 @@ import autoTable from 'jspdf-autotable';
 import React from 'react';
 
 const DEFAULT_MEALS = [
-  { name: 'Early Morning', time: '08:00 am' },
-  { name: 'BreakFast', time: '10:00 am' },
-  { name: 'Mid Morning', time: '12:00 pm' },
-  { name: 'Lunch', time: '02:00 pm' },
-  { name: 'Evening', time: '04:00 pm' },
-  { name: 'Late Evening', time: '06:00 pm' },
-  { name: 'Dinner', time: '08:00 pm' },
-  { name: 'Post Dinner', time: '10:00 pm' },
+  { name: 'Early Morning', time: '08:00', selected: true, items: [] },
+  { name: 'BreakFast', time: '10:00', selected: true, items: [] },
+  { name: 'Mid Morning', time: '12:00', selected: true, items: [] },
+  { name: 'Lunch', time: '14:00', selected: true, items: [] },
+  { name: 'Evening', time: '16:00', selected: true, items: [] },
+  { name: 'Late Evening', time: '18:00', selected: true, items: [] },
+  { name: 'Dinner', time: '20:00', selected: true, items: [] },
+  { name: 'Post Dinner', time: '22:00', selected: true, items: [] },
 ];
 
 const UNITS = ['piece', 'tbsp', 'gm', 'kg', 'ml', 'l', 'cup', 'oz', 'pinch'];
@@ -99,6 +99,14 @@ export default function Dashboard() {
   
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
+
+  const handleTimeChange = (index: number, newTime: string) => {
+    setMeals(prevMeals => {
+      const newMeals = [...prevMeals];
+      newMeals[index].time = newTime;
+      return newMeals;
+    });
+  };
 
 
   const handleDownload = () => {
@@ -523,9 +531,14 @@ export default function Dashboard() {
                       checked={meal.selected}
                       onCheckedChange={(checked) => handleMealSelectionChange(index, checked as boolean)}
                     />
-                      <div>
+                      <div className="flex-1">
                         <h3 className="font-semibold">{meal.name}</h3>
-                        <p className="text-sm text-gray-500">{meal.time}</p>
+                        <Input
+                          type="time"
+                          value={meal.time}
+                          onChange={(e) => handleTimeChange(index, e.target.value)}
+                          className="mt-1 w-32"
+                        />
                       </div>
                     </div>
 
