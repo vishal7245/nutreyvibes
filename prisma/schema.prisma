@@ -21,10 +21,13 @@ model DietMeal {
   id         String       @id @default(cuid())
   name       String
   time       String
-  comment    String?  
+  comment    String?
+  customFoods String?
   dietPlan   DietPlan    @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
   dietPlanId String
   items      MealItem[]
+
+  @@index([dietPlanId])
 }
 
 model MealItem {

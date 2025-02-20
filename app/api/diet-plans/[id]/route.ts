@@ -14,6 +14,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     const data = await req.json();
+    console.log('Updating plan with data:', data); // Debug log
+
     const dietPlan = await prisma.dietPlan.update({
       where: { id },
       data: {
@@ -23,7 +25,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           create: data.meals.map((meal: any) => ({
             name: meal.name,
             time: meal.time,
-            comment: meal.comment,
+            comment: meal.comment || null,
+            customFoods: meal.customFoods || null, // Make sure this is properly handled
             items: {
               create: meal.items.map((item: any) => ({
                 quantity: item.quantity,
@@ -34,6 +37,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           })),
         },
       },
+      include: {
+        meals: {
+          include: {
+            items: {
+              include: {
+                food: true
+              }
+            }
+          }
+        }
+      }
     });
 
     return NextResponse.json(dietPlan);
@@ -60,5 +74,41 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   } catch (error) {
     console.error('Failed to delete diet plan:', error);
     return NextResponse.json({ error: 'Failed to delete diet plan' }, { status: 500 });
+  }
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const dietPlan = await prisma.dietPlan.findUnique({
+      where: { id },
+      include: {
+        meals: {
+          select: {
+            id: true,
+            name: true,
+            time: true,
+            comment: true,
+            customFoods: true,
+            items: {
+              include: {
+                food: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!dietPlan) {
+      return NextResponse.json({ error: 'Diet plan not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(dietPlan);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch diet plan' }, { status: 500 });
   }
 }

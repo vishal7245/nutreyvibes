@@ -55,6 +55,7 @@ interface Meal {
   selected: boolean;
   items: MealItem[];
   comment?: string;
+  customFoods?: string; 
 }
 
 export default function Dashboard() {
@@ -91,6 +92,19 @@ export default function Dashboard() {
   useEffect(() => {
     fetchDietPlans();
   }, []);
+
+
+  const handleCustomFoodChange = (index: number, customFoods: string) => {
+    setMeals(prevMeals => {
+      const newMeals = [...prevMeals];
+      newMeals[index] = {
+        ...newMeals[index],
+        customFoods: customFoods,
+        selected: !!(customFoods?.trim() || newMeals[index].items.length > 0)
+      };
+      return newMeals;
+    });
+  };
 
 
   useEffect(() => {
@@ -178,6 +192,13 @@ export default function Dashboard() {
           doc.text(`Note: ${meal.comment}`, 14, yPos);
           doc.setFontSize(12);
           doc.setFont("Helvetica", 'normal');
+        }
+
+        if (meal.customFoods) {
+          doc.setFont("Helvetica", 'normal');
+          doc.setFontSize(10);
+          doc.text(`Diet: ${meal.customFoods}`, 14, yPos);
+          yPos += 10;
         }
         
         if (meal.items.length > 0) {
@@ -289,11 +310,11 @@ export default function Dashboard() {
     }
   
     // Check if any selected meal has no items
-    const emptyMeals = selectedMeals.filter(meal => meal.items.length === 0);
+    const emptyMeals = selectedMeals.filter(meal => meal.items.length === 0 && !meal.customFoods?.trim());
     if (emptyMeals.length > 0) {
       setAlertDialogContent({
         title: "Error",
-        description: `Please add food items to: ${emptyMeals.map(m => m.name).join(', ')}`
+        description: `Please add food items or custom foods to: ${emptyMeals.map(m => m.name).join(', ')}`
       });
       setAlertDialogOpen(true);
       return;
@@ -306,7 +327,10 @@ export default function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: planName,
-          meals: selectedMeals,
+          meals: selectedMeals.map(meal => ({
+            ...meal,
+            customFoods: meal.customFoods || null // Include customFoods field
+          })),
         }),
       });
   
@@ -329,6 +353,18 @@ export default function Dashboard() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const generateDefaultPlanName = () => {
+    const today = new Date();
+    return `Diet Plan - ${today.toLocaleDateString()}`;
+  };
+
+  const handleOpenDialog = () => {
+    setEditingPlan(null);
+    setPlanName(generateDefaultPlanName());
+    setMeals(DEFAULT_MEALS.map(m => ({ ...m, selected: false, items: [] })));
+    setIsDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -366,26 +402,42 @@ export default function Dashboard() {
 
   const dialogContentStyle = "max-h-[80vh] overflow-y-auto";
 
-  const handleEditPlan = (plan: any) => {
-    setEditingPlan(plan);
-    setPlanName(plan.name);
-    
-    // Create a new meals array with all default meals
-    const newMeals = DEFAULT_MEALS.map(defaultMeal => {
-      // Find if this meal exists in the plan
-      const existingMeal = plan.meals?.find((m: any) => m.name === defaultMeal.name);
+  const handleEditPlan = async (plan: any) => {
+    try {
+      const response = await fetch(`/api/diet-plans/${plan.id}`);
+      if (!response.ok) throw new Error('Failed to fetch plan details');
+      const fullPlan = await response.json();
       
-      return {
-        name: defaultMeal.name,
-        time: defaultMeal.time,
-        comment: existingMeal?.comment || '',
-        selected: existingMeal ? true : false,
-        items: existingMeal?.items || [],
-      };
-    });
-    
-    setMeals(newMeals);
-    setIsDialogOpen(true);
+      console.log('Fetched plan details:', fullPlan); // Debug log
+      
+      setEditingPlan(fullPlan);
+      setPlanName(fullPlan.name);
+      
+      const newMeals = DEFAULT_MEALS.map(defaultMeal => {
+        const existingMeal = fullPlan.meals.find((m: any) => m.name === defaultMeal.name);
+        console.log(`Mapping meal ${defaultMeal.name}:`, existingMeal); // Debug log
+        
+        return {
+          name: defaultMeal.name,
+          time: existingMeal?.time || defaultMeal.time,
+          comment: existingMeal?.comment || '',
+          customFoods: existingMeal?.customFoods || '',
+          selected: !!existingMeal,
+          items: existingMeal?.items || [],
+        };
+      });
+      
+      console.log('Mapped meals:', newMeals); // Debug log
+      setMeals(newMeals);
+      setIsDialogOpen(true);
+    } catch (error) {
+      console.error('Error fetching plan details:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load diet plan details",
+        variant: "destructive",
+      });
+    }
   };
   
   const handleUpdatePlan = async () => {
@@ -400,17 +452,32 @@ export default function Dashboard() {
 
     setIsUpdating(true);
     try {
+      console.log('Sending update with meals:', meals.filter(meal => meal.selected)); // Debug log
+
       const response = await fetch(`/api/diet-plans/${editingPlan.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: planName,
-          meals: meals.filter(meal => meal.selected),
+          meals: meals.filter(meal => meal.selected).map(meal => ({
+            name: meal.name,
+            time: meal.time,
+            comment: meal.comment || null,
+            customFoods: meal.customFoods || null,
+            items: meal.items.map(item => ({
+              quantity: item.quantity,
+              unit: item.unit,
+              foodId: item.foodId,
+            })),
+          })),
         }),
       });
-  
+
       if (!response.ok) throw new Error('Failed to update diet plan');
-  
+
+      const updatedPlan = await response.json();
+      console.log('Updated plan:', updatedPlan); // Debug log
+
       // Fetch all diet plans again to ensure we have the latest data
       await fetchDietPlans();
       
@@ -425,6 +492,7 @@ export default function Dashboard() {
       setMeals(DEFAULT_MEALS.map(m => ({ ...m, selected: true, items: [] })));
       setIsDialogOpen(false);
     } catch (error) {
+      console.error('Error updating plan:', error);
       toast({
         title: "Error",
         description: "Failed to update diet plan",
@@ -467,6 +535,9 @@ export default function Dashboard() {
       unit,
       food,
     });
+
+    newMeals[mealIndex].selected = true;
+
   
     setMeals(newMeals);
     setAddingToMeal(null);
@@ -481,6 +552,15 @@ export default function Dashboard() {
       title: "Success",
       description: "Food item added successfully",
     });
+  };
+
+  const handleRemoveFoodItem = (mealIndex: number, itemIndex: number) => {
+    const newMeals = [...meals];
+    newMeals[mealIndex].items.splice(itemIndex, 1);
+    
+    newMeals[mealIndex].selected = !!(newMeals[mealIndex].items.length > 0 || newMeals[mealIndex].customFoods?.trim());
+    
+    setMeals(newMeals);
   };
 
   const searchFoodItems = async (searchQuery: string) => {
@@ -523,7 +603,7 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold">Diet Plans</h1>
-          <Button onClick={() => setIsDialogOpen(true)}>Create Diet Plan</Button>
+          <Button onClick={handleOpenDialog}>Create Diet Plan</Button>
         </div>
 
         {/* Create/Edit Diet Plan Dialog */}
@@ -560,15 +640,30 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {meal.selected && (
+                    {meal.selected && (   
+                      <>  
                       <div className="mb-4">
-                        <textarea
-                          placeholder="Add notes for this meal..."
-                          value={meal.comment || ''}
-                          onChange={(e) => handleCommentChange(index, e.target.value)}
-                          className="w-full p-2 border rounded-md min-h-[60px] text-sm"
-                        />
-                      </div>
+                      <textarea
+                        placeholder="Add notes for this meal..."
+                        value={meal.comment || ''}
+                        onChange={(e) => handleCommentChange(index, e.target.value)}
+                        className="w-full p-2 border rounded-md min-h-[60px] text-sm"
+                      />
+                    </div>
+        
+                    {/* Custom Foods textarea - Make sure this is visible and properly bound */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2">
+                        Custom Foods
+                      </label>
+                      <textarea
+                        placeholder="Enter custom foods here..."
+                        value={meal.customFoods || ''} // Make sure this is properly bound
+                        onChange={(e) => handleCustomFoodChange(index, e.target.value)}
+                        className="w-full p-2 border rounded-md min-h-[60px] text-sm"
+                      />
+                    </div>
+                    </>
                     )}
 
                     {meal.selected && (
@@ -585,11 +680,7 @@ export default function Dashboard() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => {
-                                    const newMeals = [...meals];
-                                    newMeals[index].items.splice(itemIndex, 1);
-                                    setMeals(newMeals);
-                                  }}
+                                  onClick={() => handleRemoveFoodItem(index, itemIndex)}
                                 >
                                   <Trash className="w-4 h-4" />
                                 </Button>

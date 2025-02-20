@@ -75,6 +75,7 @@ export async function POST(req: Request) {
             name: meal.name,
             time: meal.time,
             comment: meal.comment,
+            customFoods: meal.customFoods,
             items: {
               create: meal.items.map((item: any) => ({
                 quantity: item.quantity,
